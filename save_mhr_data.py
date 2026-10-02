@@ -146,7 +146,8 @@ def _get_device():
     BLENDCAP_FORCE_CPU=1 overrides everything -> "cpu" (the CPU-only capture
     backend; the addon injects it into the subprocess env - see
     run_mocap_thread). Otherwise priority is CUDA > (DirectML detected -> CPU
-    hybrid) > MPS > CPU. On a DirectML box we deliberately return "cpu", NOT
+    hybrid) > Apple CPU/CoreML hybrid > CPU. On a DirectML box we deliberately
+    return "cpu", NOT
     torch_directml.device(): torch-directml lacks the dynamic-shape ops the
     detector/decoder/heads need, so torch runs on CPU while the heavy DINOv3
     backbone stays on the GPU via ONNX Runtime (USE_ORT, which picks
@@ -176,7 +177,13 @@ def _get_device():
     except ImportError:
         pass
     if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
-        return "mps"
+        # The bundled MHR TorchScript skeleton solver calls .double(), which
+        # MPS cannot represent; PYTORCH_ENABLE_MPS_FALLBACK cannot fix dtype
+        # conversions. Keep torch on CPU and let USE_ORT select CoreML for
+        # the DINOv3 backbone independently.
+        print("[save_mhr_data] Apple Silicon -> torch on CPU (MHR requires "
+              "float64); ONNX backbone can use CoreML.")
+        return "cpu"
     return "cpu"
 
 

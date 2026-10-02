@@ -11,3 +11,19 @@ install.log
 *.blend1
 .DS_Store
 Thumbs.db
+
+# Local credentials and capture inputs/outputs must not enter a public fork.
+.env
+.env.*
+*.pem
+*.key
+/[Tt]oken
+/[Ss]tored_tokens
+*.[mM][oO][vV]
+*.[mM][pP]4
+*.npz
+*.bvh
+blendcap_capture_debug.log
+# Existing tracked upstream workspace files remain included.
+*.blend
+*.blend[0-9]

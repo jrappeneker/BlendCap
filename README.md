@@ -1,3 +1,6 @@
+> **Experimental Apple Silicon support**
+> This branch adds a CPU/CoreML compatibility fix and [manual Mac setup instructions](docs/macos.md). It is not an official Arcomade release. macOS remains unsupported upstream; this is a limited, community-tested path, not a claim of full feature support.
+
 
 <div align="center">
 
